@@ -2,8 +2,8 @@
 <div class="theHeader">
   <div class="header">
 
-    <div class="logoHeader" @mouseenter="change()" @mouseleave="change()">
-      <router-link to="./home">
+    <div :style="{'width': logoWidth}" @mouseenter="change()" @mouseleave="change()">
+      <router-link to="./">
         <img v-show="me"  src="../assets/Header/logo.png" height="60px">
         <img v-show="!me" src="../assets/Header/logo-hover.png" height="60px">
       </router-link>
@@ -31,14 +31,29 @@
     data(){
       return{
         me:true,
-        headerFlag:false,
-        imageSRC: '../assets/Header/logo.png'
       }
     },
+    props:[
+      'logoWidth',
+    ]
+    ,
     methods:{
       change(){
         this.me = !this.me 
       },
+    },
+    mounted(){
+      // this.getLogoWidth();
+      // window.onresize = () =>{
+      //   if(!this.timer){
+      //     this.timer = true;
+      //     let that = this;
+      //     setTimeout(function(){
+      //       that.getLogoWidth();
+      //       that.timer = false
+      //     },400)
+      //   }
+      // }
     },
   }
 </script>
@@ -70,9 +85,9 @@
     margin:auto;
     width:50px;
   }
-  .logoHeader{
+  /* .logoHeader{
     width: 1770px;
-  }
+  } */
   .logoHeader img{
     margin-left: 20px;
   }

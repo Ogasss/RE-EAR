@@ -1,5 +1,5 @@
 <template>
-  <div class="StartPage">
+  <div :style="{'height': startIndexHeight,'width':startIndexWidth}" class="StartPage">
       <transition name="logo">
       <div v-show="keyShow" class="key">
         <a @click.prevent="startBtn()" href="">
@@ -29,7 +29,9 @@ methods: {
   }
 },
 props:[
-    'start'
+    'start',
+    'startIndexHeight',
+    'startIndexWidth'
 ]
 }
 </script>
@@ -37,8 +39,8 @@ props:[
 <style scoped>
 .StartPage{
   background-color: rgb(25,25,25);
-  height: 945px;
-  width: 1920px;
+  /* height: 945px;
+  width: 1920px; */
   display: flex;
 }
 .StartPage div{

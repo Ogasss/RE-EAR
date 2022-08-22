@@ -2,17 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
-import Home from '../pages/Home.vue'
+import News from '../pages/News.vue'
 
 export default new VueRouter({
     routes:[
-    {
-        path:'/home',
-        component: Home
-    },
-    {
-        path:'/',
-        redirect:'/home'
-    },
+        {
+            path:'/news',
+            component:News
+        },
     ]
 })

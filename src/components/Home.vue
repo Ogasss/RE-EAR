@@ -4,23 +4,23 @@
       <transition name="black">
         <img class="blackBackground" v-show="blackShow" src="../assets/Home/0.png">
       </transition>
-      <img v-show="imgId==1" src="../assets/Home/1.png">
-      <img v-show="imgId==2" src="../assets/Home/2.png">
-      <img v-show="imgId==3" src="../assets/Home/3.png">
-      <img v-show="imgId==4" src="../assets/Home/4.png">
+      <img :style="{'height': imgHeight,'width': imgWidth}" v-show="imgId==1" src="../assets/Home/1.png">
+      <img :style="{'height': imgHeight,'width': imgWidth}" v-show="imgId==2" src="../assets/Home/2.png">
+      <img :style="{'height': imgHeight,'width': imgWidth}" v-show="imgId==3" src="../assets/Home/3.png">
+      <img :style="{'height': imgHeight,'width': imgWidth}" v-show="imgId==4" src="../assets/Home/4.png">
     </div>
     <div class="smallImg">
 
-      <img class="smallImgL" v-show="smallImgFlagL" @mouseenter="changeL()" @mouseleave="changeL()" src="../assets/Home/箭头-左.png">
+      <img class="smallImgL" :style="{'margin-right': smallImgWidth,'margin-top': smallImgHeight}" v-show="smallImgFlagL" @mouseenter="changeL()" @mouseleave="changeL()" src="../assets/Home/箭头-左.png">
       
       <a @click.prevent="changeImgL()" href="">
-        <img class="smallImgL" v-show="!smallImgFlagL" @mouseenter="changeL()" @mouseleave="changeL()" src="../assets/Home/箭头-左-悬浮.png">
+        <img class="smallImgL" :style="{'margin-right': smallImgWidth,'margin-top': smallImgHeight}" v-show="!smallImgFlagL" @mouseenter="changeL()" @mouseleave="changeL()" src="../assets/Home/箭头-左-悬浮.png">
       </a>
       
-      <img class="smallImgR" v-show="smallImgFlagR" @mouseenter="changeR()" @mouseleave="changeR()" src="../assets/Home/箭头-右.png">
+      <img class="smallImgR" :style="{'margin-top': smallImgHeight}" v-show="smallImgFlagR" @mouseenter="changeR()" @mouseleave="changeR()" src="../assets/Home/箭头-右.png">
       
       <a @click.prevent="changeImgR()" href="">
-        <img class="smallImgR" v-show="!smallImgFlagR" @mouseenter="changeR()" @mouseleave="changeR()" src="../assets/Home/箭头-右-悬浮.png">
+        <img class="smallImgR" :style="{'margin-top': smallImgHeight}" v-show="!smallImgFlagR" @mouseenter="changeR()" @mouseleave="changeR()" src="../assets/Home/箭头-右-悬浮.png">
       </a>
 
     </div>
@@ -39,6 +39,14 @@
         blackShow:true,
       }
     },
+    props:[
+      'smallImgWidth',
+      'smallImgHeight',
+      'bigImgHeight',
+      'bigImgWidth',
+      'imgHeight',
+      'imgWidth'
+    ],
     methods: {
       changeL(){
         this.smallImgFlagL = !this.smallImgFlagL
@@ -59,7 +67,8 @@
         }else{
           this.imgId++
         }
-      }
+      },
+
     },
     watch:{
       imgId:{
@@ -70,11 +79,6 @@
             this.blackShow = !this.blackShow
         }
       },
-      blackShow1:{
-        handler(){
-         
-        }
-      },
     },
     mounted() {
       setTimeout(()=>{
@@ -83,6 +87,7 @@
       setInterval(() => {
         this.changeImgR()
       }, 15000);
+
     },
   }
 </script>
@@ -93,14 +98,13 @@
     /* 实现上移动导航栏覆盖 */
     position: relative;
     /* 实现箭头 */
-    width: 1920px;
+
   }
   .bigImg{
     display: flex;
     /* 实现轮播图 */
     position: absolute;
     /* 实现箭头与轮播图覆盖问题 */
-    width: 1920px;
     overflow: hidden;
   }
   .bigImg img{
@@ -116,13 +120,15 @@
   .smallImg img{
     height: 100px;
     width: 45px;
-    margin-top: 450px;
+
+    /* margin-top: 450px; */
     opacity: 0.8;
     /* 实现箭头下移至屏幕中心 */
   }
   .smallImgL{
     margin-left: 10px;
-    margin-right: 1810px;
+
+    /* margin-right: 1810px; */
     /* 实现箭头移动至屏幕两侧 */
   }
   .samllImgR{
