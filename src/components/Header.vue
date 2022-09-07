@@ -1,143 +1,144 @@
 <template>
-<div class="theHeader">
+<div>
   <div class="header">
-
-    <div :style="{'width': logoWidth}" @mouseenter="change()" @mouseleave="change()">
-      <router-link to="./">
-        <img v-show="me"  src="../assets/Header/logo.png" height="60px">
-        <img v-show="!me" src="../assets/Header/logo-hover.png" height="60px">
+    <div @mouseenter="change()" @mouseleave="change()">
+      <router-link to="./home">
+        <img v-show="!logoHoverFlag" src="../assets/Header/logo.png">
+        <transition name="logo">
+          <img v-show="logoHoverFlag" src="../assets/Header/logo-hover.png">
+        </transition>
       </router-link>
-      <transition name="logoHeaderTwo">
-        <div v-show="!me" class="headerTwo">
-          <div><router-link to="./news">情报资讯</router-link></div>
-          <div><router-link to="./character">角色信息</router-link></div>
-          <div><router-link to="./design">设定概念</router-link></div>
+      <transition name="list">
+        <div v-show="logoHoverFlag" class="headerTwo">
+          <div class="headerTwoDiv"><router-link to="./news">情报资讯<div class="underline"></div></router-link></div>
+          <div class="headerTwoDiv"><router-link to="./me">个人中心<div class="underline"></div></router-link></div>
         </div>
       </transition>
-    </div>
-    <div class="loginAndRegister">
-      <router-link class="aText1" to="./login">登录</router-link>
-      <div class="borderBox"></div>
-      <router-link class="aText2" to="./register">注册</router-link>
-    </div>
+    </div> 
 
+      <div class="i"></div>
+    <div class="loginAndRegister">
+      <router-link class="routerLink" to="./login">登录</router-link>
+      <div class="borderBox"></div>
+      <router-link class="routerLink" to="./login">注册</router-link>
+    </div>
   </div>
+
 </div>
 </template>
 
 <script>
-  export default {
-    name:'Header',
-    data(){
-      return{
-        me:true,
-      }
-    },
-    props:[
-      'logoWidth',
-    ]
-    ,
-    methods:{
-      change(){
-        this.me = !this.me 
-      },
-    },
-    mounted(){
-      // this.getLogoWidth();
-      // window.onresize = () =>{
-      //   if(!this.timer){
-      //     this.timer = true;
-      //     let that = this;
-      //     setTimeout(function(){
-      //       that.getLogoWidth();
-      //       that.timer = false
-      //     },400)
-      //   }
-      // }
-    },
-  }
+export default {
+  name:'Header',
+  data() {
+    return {
+      logoHoverFlag: false,
+      loginFlag:false,
+    }
+  },
+  methods: {
+    change(){
+      this.logoHoverFlag = !this.logoHoverFlag
+    }
+  },
+  components:{
+  },
+  props:[
+    'showLogin'
+  ]
+}
 </script>
 
 <style scoped>
-  .theHeader{
-    opacity: 0.9;
-  }
-  .borderBox{
-    height: 18px;
-    border-left: 2px solid #fff;
-    margin:auto;
-  }
-  .header{
+.header{
+  opacity: 0.9;
+  display: flex;
+  background-color: rgb(25, 25, 25);
+  box-shadow: 0px 6px 14px 0px rgb(0 0 0 / 80%);
+  height: 60px;
+}
+.header img{
+  height: 60px;
+  position: fixed;
+  left: 20px
+}
+.i{
+  width: 90%;
+}
+.borderBox{
+  height: 18px;
+  border-left: 2px solid #fff;
+  margin:auto;
+}
+.loginAndRegister{
+  width: 8%;
+  min-width: 125px;
+  display: flex;
+}
+.routerLink{
+  margin: auto;
+  color:white;
+  font-size: 18px;
+}
+a:hover{
+  color:white;
+  text-shadow: 0 0 10px white, 0 0 20px white, 0 0 40px white;
+  transition: text-shadow 0.3s ease;
+  text-decoration: none;
+}
+.headerTwo{
+  opacity: 0.65;
+  color: rgb(255, 255, 255);
+  font-size: 16px;
+  position: fixed;
+  top:60px;
+  left:0px;
+}
+.headerTwoDiv{
     background-color: rgb(25, 25, 25);
-    display: flex;
-    box-shadow: 0px 6px 14px 0px rgb(0 0 0 / 80%);
     height: 60px;
-  }
-  .aText1{
-    color:white;
-    font-size: 18px;
-    margin:auto;
-    width:38px;
-  }
-  .aText2{
-    color:white;
-    font-size: 18px;
-    margin:auto;
-    width:50px;
-  }
-  /* .logoHeader{
-    width: 1770px;
-  } */
-  .logoHeader img{
-    margin-left: 20px;
-  }
-  .loginAndRegister{
+    width: 200px;
+    box-shadow: 0px 6px 14px 0px rgb(0 0 0 / 80%);
     display: flex;
-    width:150px;
-  }
-  a:hover{
+}
+.headerTwo div a{
+    margin: auto;
+    border-bottom: 2px solid rgb(25, 25, 25);
+}
+.headerTwo div a:hover{
     color:white;
-    text-shadow: 0 0 10px white, 0 0 20px white, 0 0 40px white;
-    text-decoration: none;
-  }
-  .headerTwo{
-      opacity: 0.65;
-      color: rgb(255, 255, 255);
-      font-size: 16px;
-  }
-  .headerTwo div{
-      background-color: rgb(25, 25, 25);
-      height: 60px;
-      width: 200px;
-      box-shadow: 0px 6px 14px 0px rgb(0 0 0 / 80%);
-      display: flex;
-  }
-  .headerTwo div a{
-      margin: auto;
-  }
-  .headerTwo div a:hover{
-      color:white;
-      text-shadow: 0 0 10px rgb(210, 210, 210), 0 0 20px rgb(210, 210, 210), 0 0 40px rgb(210, 210, 210);
-      text-decoration: none;
-  }
+    text-shadow: 0 0 10px rgb(210, 210, 210), 0 0 20px rgb(210, 210, 210), 0 0 40px rgb(210, 210, 210);
+    text-decoration: none; 
+    transform: translateX(10px);
+    transition: all 0.3s ease;
+}
 
-  /* .logoHeaderTwo-enter{
-    height: 0px;
-  }
-  .logoHeaderTwo-enter-to{
-    height: 180px;
-  }
-  .logoHeaderTwo-enter-alive{
-    transition: 1.6s all linear
-  }
+.logo-enter{
+  opacity: 0.6;
+}
+.logo-enter-to{
+  opacity: 1;
+}
+.logo-enter-active{
+  transition: 0.6s all ease;
+}
 
-  .logoHeaderTwo-leave{
-    height: 180px;
-  }
-  .logoHeaderTwo-leave-to{
-    height: 0px;
-  }
-  .logoHeaderTwo-leave-alive{
-    transition: 1.6s all linear
-  } */
+.list-enter{
+  transform: translateX(-200px);
+}
+.list-enter-to{
+  transform: translateX(0px);
+}
+.list-enter-active{
+  transition: 0.6s all ease;
+}
+.list-leave{
+  transform: translateX(0px);
+}
+.list-leave-to{
+  transform: translateX(-200px);
+}
+.list-leave-active{
+  transition: 0.6s all ease;
+}
 </style>

@@ -1,19 +1,21 @@
 <template>
-  <div class="news">
+  <div class="me">
     <BlackBackground/>
+
   </div>
 </template>
 
 <script>
-import BlackBackground from "../components/BlackBackground.vue"
+import BlackBackground from '../components/BlackBackground.vue'
 export default {
-name:'News',
+name:'me',
 data() {
-  return {
-  }
+    return {
+        
+    }
 },
 components:{
-  BlackBackground
+    BlackBackground
 }
 }
 </script>

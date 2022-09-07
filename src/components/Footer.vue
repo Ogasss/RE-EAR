@@ -15,15 +15,9 @@
 </template>
 
 <script>
-  
-  export default {
-    name:'Footer',
-    data(){
-      return{
+export default {
 
-      }
-    }
-  }
+}
 </script>
 
 <style scoped>
@@ -40,4 +34,5 @@
   font-size: 10px;
   font-weight: bold;
 }
+
 </style>

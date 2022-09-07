@@ -1,56 +1,54 @@
 <template>
-  <div :style="{'height': startIndexHeight,'width':startIndexWidth}" class="StartPage">
+  <div>
+    <a @click.prevent="changeStart" href="">
+      <img src="../assets/StartIndex/logo-black.png" v-show="flag" @mouseenter="change()">
+      
+      
       <transition name="logo">
-      <div v-show="keyShow" class="key">
-        <a @click.prevent="startBtn()" href="">
-          <img v-show="me" @mouseenter="change()" @mouseleave="change()" src="../assets/Header/logo.png">
-          <img v-show="!me" @mouseenter="change()" @mouseleave="change()" src="../assets/Header/logo-hover2.png">          
-        </a>
-      </div>
+        <img src="../assets/Header/logo-hover2.png" v-show="!flag" @mouseleave="change()">
       </transition>
+    </a>
   </div>
 </template>
 
 <script>
 export default {
-name:'StartPage',
+name:'StartIndex',
 data() {
-    return {
-      me:true,
-      keyShow:true
-    }
+  return {
+    flag: true,
+  }
 },
 methods: {
-  startBtn(){
-    this.start()
-  },
   change(){
-    this.me = !this.me
+    this.flag = !this.flag
   }
 },
 props:[
-    'start',
-    'startIndexHeight',
-    'startIndexWidth'
+  'changeStart'
 ]
 }
 </script>
 
 <style scoped>
-.StartPage{
-  background-color: rgb(25,25,25);
-  /* height: 945px;
-  width: 1920px; */
-  display: flex;
-}
-.StartPage div{
-  opacity: 0.7;
-  margin: auto;
-}
-.StartPage div img{
-  margin-left: 30%;
-  width: 50%;
-  height: 50%;
-}
-
+  div{
+    background-color: rgb(25, 25, 25);
+  }
+  div a img{
+    position: fixed;
+    width: 50vw;
+    height: 20vw;
+    margin-left: 26vw;
+    margin-right: 24vw;
+    margin-top: 30vh;
+  }
+  .logo-enter{
+    opacity: 0;
+  }
+  .logo-enter-to{
+    opacity: 1;
+  }
+  .logo-enter-active{
+    transition: 0.8s all ease;
+  }
 </style>
