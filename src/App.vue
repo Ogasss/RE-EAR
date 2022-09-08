@@ -41,13 +41,14 @@ components:{
   Header,
   Footer,
   StartIndex,
+  alert
 },
 mounted() {
   this.footerShow()
   window.addEventListener('resize',()=>{
     var now = new Date().getTime()
     // console.log(now - this.old)
-    if(now - this.old > 300 || this.old == 0){
+    if(now - this.old > 200 || this.old == 0){
       this.footerShow()
       // console.log('检测')
       this.old=now

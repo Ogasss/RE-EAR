@@ -1,15 +1,12 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-Vue.use(Vuex)
-import {loginTel} from '../api'
+import {loginApi} from '../api'
 
 const state = {
-    loginTel:[]
+    loginTel:{}
 }
 
 const actions = {
-    async getLoginTel(commit,telPhone){
-        const result = await loginTel(telPhone)
+    async getLoginTel({commit},telPhone){
+        const result = await loginApi(telPhone)
         commit('RECEIVE_LoginTel',result)
     }
 }
@@ -24,9 +21,9 @@ const getters = {
 
 }
 
-export default new Vuex.Store({
+export default{
     state,
     mutations,
     actions,
     getters,
-})
+}

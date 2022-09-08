@@ -20,6 +20,7 @@
               <div class="input-data">
                   <input v-model="loginTelValue" 
                     type="text"
+                    ref="loginTel"
                     required>
                   <div class="underline"></div>
                   <label>{{loginTel}}</label>
@@ -30,6 +31,7 @@
               <div class="input-data">
                   <input v-model="loginPasswordValue"
                     :type="passwordInput" 
+                    ref="loginPassword"
                     @mouseenter="passwordInput = 'text'" @mouseleave="passwordInput = 'password'" 
                    required>
                   <div class="underline"></div>
@@ -52,7 +54,11 @@
           <form action="GET" novalidate>
             <div id="tel2" class="wrapper">
               <div class="input-data">
-                  <input type="text" v-model="registerTelValue" required>
+                  <input 
+                  type="text" 
+                  v-model="registerTelValue" 
+                  ref="registerTel"
+                  required>
                   <div class="underline"></div>
                   <label>{{registerTel}}</label>
               </div>
@@ -60,8 +66,13 @@
             
             <div id="password2" class="wrapper">
               <div class="input-data" id="passwordInput">
-                  <input v-model="registerPasswordValue"
-                    :type="passwordInput" @mouseenter="passwordInput = 'text'" @mouseleave="passwordInput = 'password'" required>
+                  <input 
+                  v-model="registerPasswordValue"
+                  ref="registerPassword"
+                  :type="passwordInput" 
+                  @mouseenter="passwordInput = 'text'" 
+                  @mouseleave="passwordInput = 'password'" 
+                  required>
                   <div class="underline"></div>
                   <label>{{registerPassword}}</label>
               </div>
@@ -69,8 +80,13 @@
 
             <div id="password3" class="wrapper">
               <div class="input-data" id="passwordInput">
-                  <input v-model="registerPasswordReValue"
-                    :type="passwordInput" @mouseenter="passwordInput = 'text'" @mouseleave="passwordInput = 'password'" required>
+                  <input 
+                  v-model="registerPasswordReValue"
+                  ref="registerPasswordRe"
+                  :type="passwordInput"
+                  @mouseenter="passwordInput = 'text'" 
+                  @mouseleave="passwordInput = 'password'" 
+                  required>
                   <div class="underline"></div>
                   <label>{{registerPasswordRe}}</label>
               </div>
@@ -78,7 +94,11 @@
 
             <div id="checkWord2" class="wrapper">
               <div class="input-data">
-                  <input v-model="registerCheckWordValue" type="text" required>
+                  <input 
+                  v-model="registerCheckWordValue" 
+                  type="text" 
+                  ref="registerCheckWord"
+                  required>
                   <div class="underline"></div>
                   <label>{{registerCheckWord}}</label>
                   <div class="btn2">
@@ -88,7 +108,7 @@
             </div>
 
             <div id="btn2" class="btn">
-              <button>注&nbsp&nbsp册</button>
+              <button @click.prevent="registerCheck()">注&nbsp&nbsp册</button>
             </div>
 
             <div class="change">
@@ -103,11 +123,12 @@
 
 <script>
 import BlackBackground from '../components/BlackBackground.vue'
+import {registerApi} from '../api'
+
 export default {
 name:"Login",
 data() {
     return {
-        imgFlag: true,
         logoFlag: true,
         theWidthFlag: true,
         passwordInput:'password',
@@ -123,6 +144,11 @@ data() {
         registerCheckWordValue:'',
         TheCheckWord:'',
 
+        theLoginTel:'',
+        theLoginPassword:'',
+        theRegisterTel:'',
+        theRegisterPassword:'',
+
 
         loginTel:'手机号',
         loginPassword:'密码',
@@ -137,7 +163,7 @@ methods: {
     this.logoFlag = !this.logoFlag
   },
   imgChange(){
-    this.imgFlag = !this.imgFlag
+    this.$store.state.loginAndRegisterChoice = !this.$store.state.loginAndRegisterChoice
   },
   lARchange(){
     this.lARflag = !this.lARflag
@@ -155,14 +181,13 @@ methods: {
       return this.logoChange
     }
   },
-
   createCheckWord(){
     var num = '';
     for(let i=0;i<6;i++){
       num += Math.floor(Math.random()*10);
     }
     this.TheCheckWord = num
-    alert(this.TheCheckWord)
+    alert('验证码：'+this.TheCheckWord)
   },
 
   TelCheck(value){
@@ -182,19 +207,19 @@ methods: {
   },
 
   PasswordCheck(value){
-    const ruler = /^[A-Z0-9a-z()~_./+-@&]*$/;
+    const ruler = /[A-Z0-9a-z]/
     if(value.length < 8){
       return '密码至少需要八位！'
+    }else if(value.length >16){
+      return '密码应小于十六位！'
     }else{
-      if(value.length >16){
-        return '密码应小于十六位！'
-      }else{
-        if(!ruler.test(value)){
-          return '密码含有非法字符！'
-        }else{
-          return '密码√'
+      var str = '密码 √'
+      for(let i=0;i<value.length;i++){
+        if(!ruler.test(value[i])){
+          str = '密码含有非法字符！'
         }
       }
+      return str
     }
   },
 
@@ -217,10 +242,103 @@ methods: {
         return '验证码 √'
       }
     }
+  },
+
+
+  loginCheck(){
+    if(this.loginTelValue == ''){
+      this.loginTel = '请输入手机号！'
+      this.$refs.loginTel.focus()
+      setTimeout(() => {
+        this.loginTel = '手机号'
+      }, 1200)
+    }else if(this.loginPasswordValue == ''){
+      this.loginPassword = '请输入密码！'
+      this.$refs.loginPassword.focus()
+      setTimeout(() => {
+        this.loginPassword = '密码'
+      }, 1200)
+    }else if(this.theLoginTel !== '' && this.theLoginPassword !== ''){
+      if(this.theLoginTel == this.loginTelValue && this.theLoginPassword == this.loginPasswordValue){
+        this.$store.dispatch('getLoginTel',this.theLoginTel)
+        setTimeout(() => {
+          const telList = this.$store.state.login.loginTel
+          // console.log(telList)
+          // console.log(telList.id)
+          // console.log(telList.password)
+          if(telList.id == this.theLoginTel && telList.password == this.theLoginPassword){
+            alert('登录成功！')
+            this.$store.state.logined = true
+            this.$router.push('/home')
+            // console.log(this.$store.state)
+          }else if(telList.password != undefined && telList.password != this.theLoginPassword){
+            alert('密码错误！')
+          }else{
+            alert('账号不存在！')
+          }
+        }, 800);
+      }
+    }
+  },
+
+  registerCheck(){
+    if(this.registerTelValue == ''){
+      this.registerTel = '请输入手机号！'
+      this.$refs.registerTel.focus()
+      setTimeout(() => {
+        this.registerTel = '手机号'
+      }, 1200)
+    }else if(this.registerPasswordValue == ''){
+      this.registerPassword = '请输入密码！'
+      this.$refs.registerPassword.focus()
+      setTimeout(()=>{
+        this.registerPassword = '密码'
+      },1200)
+    }else if(this.registerPasswordReValue == ''){
+      this.registerPasswordRe = '请确认密码！'
+      this.$refs.registerPasswordRe.focus()
+      setTimeout(()=>{
+        this.registerPasswordRe = '确认密码'
+      },1200)
+    }else if(this.registerCheckWordValue == ''){
+      this.registerCheckWord = '请输入验证码！'
+      this.$refs.registerCheckWord.focus()
+      setTimeout(()=>{
+        this.registerCheckWord = '验证码'
+      },1200)
+    }else if(this.theRegisterTel !=='' && this.theRegisterPassword !==''){
+      if(this.theRegisterTel == this.registerTelValue && this.theRegisterPassword == this.registerPasswordValue && this.theRegisterPassword == this.registerPasswordReValue){
+        const registerTel = this.theRegisterTel
+        const registerPassword = this.theRegisterPassword
+        var flag = true
+        console.log('手机号'+registerTel)
+        console.log('密码'+registerPassword)
+        this.$store.dispatch('getLoginTel',this.theRegisterTel)
+        setTimeout(()=>{
+          const tel = this.$store.state.login.loginTel.id
+          console.log('查询重复信息：'+tel)
+          if(tel == registerTel){
+            flag = false
+            console.log(flag)
+          }
+          if(flag){
+            registerApi({
+              id:registerTel,
+              password:registerPassword
+          })
+          alert('注册成功！')
+          this.$store.state.loginAndRegisterChoice = true
+          }else{
+            alert('账号已存在！')
+          }
+        },1200)
+      }
+    }
   }
 },
 components:{
-  BlackBackground
+  BlackBackground,
+  alert
 },
 watch:{
   loginTelValue:{
@@ -230,6 +348,22 @@ watch:{
         this.loginTel = '手机号'
       }else{
         this.loginTel = this.TelCheck(this.loginTelValue)
+        if(this.loginTel === '手机号 √'){
+          this.theLoginTel = this.loginTelValue
+        }
+      }
+    }
+  },
+  loginPasswordValue:{
+    immediate:true,
+    handler(){
+      if(this.loginPasswordValue == ''){
+        this.loginPassword = '密码'
+      }else{
+        this.loginPassword = this.PasswordCheck(this.loginPasswordValue)
+        if(this.loginPassword === '密码 √'){
+          this.theLoginPassword = this.loginPasswordValue
+        }
       }
     }
   },
@@ -240,6 +374,9 @@ watch:{
         this.registerTel = '手机号'
       }else{
         this.registerTel = this.TelCheck(this.registerTelValue)
+        if(this.registerTel === '手机号 √'){
+          this.theRegisterTel = this.registerTelValue
+        }
       }
     }
   },
@@ -249,8 +386,8 @@ watch:{
       if(this.registerPasswordValue == ''){
         this.registerPassword = '密码'
       }else{
-        this.registerPasswordRe = this.PasswordReCheck()
         this.registerPassword = this.PasswordCheck(this.registerPasswordValue)
+        this.registerPasswordRe = this.PasswordReCheck()
       }
     }
   },
@@ -261,6 +398,9 @@ watch:{
         this.registerPasswordRe = '确认密码'
       }else{
         this.registerPasswordRe = this.PasswordReCheck()
+        if(this.registerPassword === '密码 √' && this.registerPasswordRe === '确认密码 √'){
+          this.theRegisterPassword = this.registerPasswordReValue
+        }
       }
     }
   },
@@ -276,11 +416,16 @@ watch:{
   }
 
 },
+computed:{
+  imgFlag(){
+    return this.$store.state.loginAndRegisterChoice
+  }
+},
 mounted() {
   this.widthFlag()
   window.addEventListener('resize',()=>{
     var now = new Date().getTime()
-    if(now - this.old > 300 || this.old == 0){
+    if(now - this.old > 200 || this.old == 0){
       // console.log('内容执行')
       this.widthFlag()
       this.old=now

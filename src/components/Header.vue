@@ -11,16 +11,27 @@
       <transition name="list">
         <div v-show="logoHoverFlag" class="headerTwo">
           <div class="headerTwoDiv"><router-link to="./news">情报资讯<div class="underline"></div></router-link></div>
-          <div class="headerTwoDiv"><router-link to="./me">个人中心<div class="underline"></div></router-link></div>
         </div>
       </transition>
     </div> 
 
       <div class="i"></div>
-    <div class="loginAndRegister">
-      <router-link class="routerLink" to="./login">登录</router-link>
+    <div v-if="!logined" class="loginAndRegister">
+      <router-link class="routerLink"
+      @click.native="choiceLogin()"
+       to="./login">登录</router-link>
       <div class="borderBox"></div>
-      <router-link class="routerLink" to="./login">注册</router-link>
+      <router-link class="routerLink"
+      @click.native="choiceRegister()"
+       to="./login">注册</router-link>
+    </div>
+    <div v-if="logined" class="loginAndRegister">
+      <router-link class="routerLink"
+       to="./me">我的</router-link>
+      <div class="borderBox"></div>
+      <a href="" @click.prevent="exit()"
+      class="routerLink"
+       to="./">退出</a>
     </div>
   </div>
 
@@ -39,9 +50,25 @@ export default {
   methods: {
     change(){
       this.logoHoverFlag = !this.logoHoverFlag
+    },
+    choiceLogin(){
+      this.$store.state.loginAndRegisterChoice = true
+    },
+    choiceRegister(){
+      this.$store.state.loginAndRegisterChoice = false
+    },
+    exit(){
+      this.$store.state.logined = false;
+      this.$store.state.login = {};
+      // console.log(this.$store.state)
     }
   },
   components:{
+  },
+  computed:{
+    logined(){
+      return this.$store.state.logined
+    }
   },
   props:[
     'showLogin'
