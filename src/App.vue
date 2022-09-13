@@ -1,9 +1,9 @@
 <template>
-<div>
+<div class="Box">
   <div v-show="start" class="appStartIndex"><StartIndex :changeStart="changeStart"/></div>
   <div v-show="!start" class="appHeader"><Header :showLogin="showLogin"/></div>
-  <div v-if="!start" class="appRouterView"><router-view></router-view></div>
-  <div v-show="footerFlag && !start && this.$route.path == '/home'" class="appFooter"><Footer/></div>
+  <div @click="NewAlertCancel()" v-if="!start" class="appRouterView"><router-view></router-view></div>
+  <div @click="NewAlertCancel()" v-show="footerFlag && !start && this.$route.path == '/home'" class="appFooter"><Footer/></div>
 </div>
 </template>
 
@@ -11,6 +11,7 @@
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import StartIndex from './components/StartIndex.vue'
+
 
 export default {
 name:'app',
@@ -35,15 +36,22 @@ methods: {
   },
   showLogin(){
     this.loginFlag = true
+  },
+  NewAlertCancel(){
+    this.$store.state.NewAlertShowFlag = false
   }
 },
 components:{
   Header,
   Footer,
   StartIndex,
-  alert
 },
 mounted() {
+  if(localStorage.getItem('logined')==='false'){
+    this.start = true
+  }else if(localStorage.getItem('logined')==='true'){
+    this.start = false
+  }
   this.footerShow()
   window.addEventListener('resize',()=>{
     var now = new Date().getTime()
@@ -59,6 +67,9 @@ mounted() {
 </script>
 
 <style>
+.Box{
+  background-color: rgb(25, 25, 25);
+}
 .appHeader{
   position: fixed;
   top: 0;

@@ -1,6 +1,9 @@
 <template>
   <div class="news">
     <BlackBackground/>
+    <div class="theP">
+      开发中
+    </div>
   </div>
 </template>
 
@@ -19,5 +22,14 @@ components:{
 </script>
 
 <style scoped>
-
+.news{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+.theP{
+  margin: auto;
+  font-size: 22px;
+  color: white;
+}
 </style>

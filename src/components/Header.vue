@@ -1,8 +1,13 @@
 <template>
 <div>
+  <transition name="newAlert">
+    <div v-if="this.$store.state.NewAlertShowFlag">
+      <NewAlert :btnMethod="exit"/>
+    </div>
+  </transition>
   <div class="header">
-    <div @mouseenter="change()" @mouseleave="change()">
-      <router-link to="./home">
+    <div @click="NewAlertCancel()" @mouseenter="change()" @mouseleave="change()">
+      <router-link to="/home">
         <img v-show="!logoHoverFlag" src="../assets/Header/logo.png">
         <transition name="logo">
           <img v-show="logoHoverFlag" src="../assets/Header/logo-hover.png">
@@ -10,26 +15,26 @@
       </router-link>
       <transition name="list">
         <div v-show="logoHoverFlag" class="headerTwo">
-          <div class="headerTwoDiv"><router-link to="./news">情报资讯<div class="underline"></div></router-link></div>
+          <div class="headerTwoDiv"><router-link to="/news">情报资讯<div class="underline"></div></router-link></div>
         </div>
       </transition>
     </div> 
 
-      <div class="i"></div>
-    <div v-if="!logined" class="loginAndRegister">
+      <div @click="NewAlertCancel()" class="i"></div>
+    <div @click="NewAlertCancel()" v-if="!logined" class="loginAndRegister">
       <router-link class="routerLink"
       @click.native="choiceLogin()"
-       to="./login">登录</router-link>
+       to="/login">登录</router-link>
       <div class="borderBox"></div>
       <router-link class="routerLink"
       @click.native="choiceRegister()"
-       to="./login">注册</router-link>
+       to="/login">注册</router-link>
     </div>
     <div v-if="logined" class="loginAndRegister">
-      <router-link class="routerLink"
-       to="./me">我的</router-link>
-      <div class="borderBox"></div>
-      <a href="" @click.prevent="exit()"
+      <router-link @click="NewAlertCancel()" class="routerLink"
+       to="/person/message">我的</router-link>
+      <div @click="NewAlertCancel()" class="borderBox"></div>
+      <a href="" @click.prevent="exitShow()"
       class="routerLink"
        to="./">退出</a>
     </div>
@@ -39,12 +44,14 @@
 </template>
 
 <script>
+import NewAlert from './NewAlert.vue'
 export default {
   name:'Header',
   data() {
     return {
       logoHoverFlag: false,
       loginFlag:false,
+      exitFlag:false,
     }
   },
   methods: {
@@ -57,22 +64,43 @@ export default {
     choiceRegister(){
       this.$store.state.loginAndRegisterChoice = false
     },
+    exitShow(){
+      this.$store.state.NewAlertTitle = ''
+      this.$store.state.NewAlertContent = '是否要退出已登录的账号？'
+      this.$store.state.NewAlertBtnS = true
+      this.$store.state.NewAlertShowFlag = !this.$store.state.NewAlertShowFlag
+      this.$store.state.NewAlertF5Flag = false
+    },
     exit(){
+      this.$store.state.NewAlertShowFlag = !this.$store.state.NewAlertShowFlag
       this.$store.state.logined = false;
+      localStorage.setItem('logined',this.$store.state.logined)
+      localStorage.setItem('tel','')
       this.$store.state.login = {};
-      // console.log(this.$store.state)
-    }
+      this.$router.push('/home')
+      location.reload()
+    },
+    NewAlertCancel(){
+    this.$store.state.NewAlertShowFlag = false
+  }
   },
   components:{
+    NewAlert
   },
   computed:{
     logined(){
-      return this.$store.state.logined
+      let value
+      if(localStorage.getItem('logined')==='false'){
+        value = false
+      }else if(localStorage.getItem('logined')==='true'){
+        value = true
+      }
+      return value
     }
   },
   props:[
     'showLogin'
-  ]
+  ],
 }
 </script>
 
@@ -167,5 +195,27 @@ a:hover{
 }
 .list-leave-active{
   transition: 0.6s all ease;
+}
+.newAlert-enter{
+  transform: translateY(-40px);
+  opacity: 0;
+}
+.newAlert-enter-to{
+  transform: translateY(0px);
+  opacity: 1;
+}
+.newAlert-enter-active{
+  transition: 0.3s all ease;
+}
+.newAlert-leave{
+  transform: translateY(0px);
+  opacity: 1;
+}
+.newAlert-leave-to{
+  transform: translateY(-40px);
+  opacity: 0;
+}
+.newAlert-leave-active{
+  transition: 0.3s all ease;
 }
 </style>

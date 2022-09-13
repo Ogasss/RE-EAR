@@ -24,9 +24,7 @@ service.interceptors.response.use((response)=>{
 },(error)=>{
     NProgress.done();
     // alert("请求失败！错误为："+error.message)
-    if(error.message == 'Request failed with status code 404'){
-        responseMessage = '用户名不存在'
-    }
+    console.log(error.message)
     return new Promise(()=>{})
 })
 

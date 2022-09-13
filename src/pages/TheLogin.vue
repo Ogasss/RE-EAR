@@ -145,6 +145,7 @@ data() {
         TheCheckWord:'',
 
         theLoginTel:'',
+        theLoginTelOld:'',
         theLoginPassword:'',
         theRegisterTel:'',
         theRegisterPassword:'',
@@ -187,7 +188,11 @@ methods: {
       num += Math.floor(Math.random()*10);
     }
     this.TheCheckWord = num
-    alert('验证码：'+this.TheCheckWord)
+    
+    setTimeout(() => {
+      const str = '验证码：'+this.TheCheckWord +''
+      this.AlertShow(str)
+    }, 800);
   },
 
   TelCheck(value){
@@ -260,24 +265,38 @@ methods: {
       }, 1200)
     }else if(this.theLoginTel !== '' && this.theLoginPassword !== ''){
       if(this.theLoginTel == this.loginTelValue && this.theLoginPassword == this.loginPasswordValue){
-        this.$store.dispatch('getLoginTel',this.theLoginTel)
-        setTimeout(() => {
-          const telList = this.$store.state.login.loginTel
-          // console.log(telList)
-          // console.log(telList.id)
-          // console.log(telList.password)
-          if(telList.id == this.theLoginTel && telList.password == this.theLoginPassword){
-            alert('登录成功！')
-            this.$store.state.logined = true
-            this.$router.push('/home')
-            // console.log(this.$store.state)
-          }else if(telList.password != undefined && telList.password != this.theLoginPassword){
-            alert('密码错误！')
-          }else{
-            alert('账号不存在！')
-          }
-        }, 800);
-      }
+        // console.log('旧：'+this.theLoginTelOld)
+        // console.log('新：'+this.theLoginTel)
+        if(this.theLoginTelOld == this.theLoginTel){
+          // console.log('执行show')
+          this.Show()
+        }else{
+          this.$store.dispatch('getLoginTel',this.theLoginTel)
+          setTimeout(() => {
+            let telList = this.$store.state.login.loginTel
+            console.log(telList)
+            console.log(telList.id)
+            console.log(telList.password)
+            if(telList.id == this.theLoginTel && telList.password == this.theLoginPassword){
+              this.AlertShow('登录成功！',true)
+              this.$store.state.logined = true
+              localStorage.setItem('tel',this.theLoginTel)
+              localStorage.setItem('logined',this.$store.state.logined)
+              this.$router.push('/home')
+              setTimeout(() => {
+                location.reload()
+              }, 1200);
+              // console.log(this.$store.state)
+            }else if(telList.id == undefined || telList.id != this.theLoginTel){
+              this.AlertShow('账号不存在！',false)
+              this.theLoginTelOld = this.theLoginTel
+            }else if(telList.id != undefined && telList.password != this.theLoginPassword){
+              this.AlertShow('密码错误！',false)
+              this.theLoginTelOld = this.theLoginTel
+            }
+          }, 1200);
+        }
+    }
     }
   },
 
@@ -311,29 +330,54 @@ methods: {
         const registerTel = this.theRegisterTel
         const registerPassword = this.theRegisterPassword
         var flag = true
-        console.log('手机号'+registerTel)
-        console.log('密码'+registerPassword)
         this.$store.dispatch('getLoginTel',this.theRegisterTel)
         setTimeout(()=>{
-          const tel = this.$store.state.login.loginTel.id
-          console.log('查询重复信息：'+tel)
-          if(tel == registerTel){
+          let telList = this.$store.state.login.loginTel
+          if(telList == undefined){
+            flag = true
+          }else if(telList.id == this.theRegisterTel){
             flag = false
-            console.log(flag)
           }
+
           if(flag){
             registerApi({
               id:registerTel,
-              password:registerPassword
-          })
-          alert('注册成功！')
-          this.$store.state.loginAndRegisterChoice = true
+              password:registerPassword,
+              username:registerTel,
+              userEmail:'',
+              IconId:1,
+            })
+            this.AlertShow('注册成功！',false)
+            this.$store.state.loginAndRegisterChoice = true
+            setTimeout(() => {
+              location.reload()
+            }, 1200);
           }else{
-            alert('账号已存在！')
+            this.AlertShow('账号已存在！',false)
           }
         },1200)
       }
     }
+  },
+
+  AlertShow(value,boolean){
+    this.$store.state.NewAlertShowFlag = true
+    this.$store.state.NewAlertBtnS = false
+    this.$store.state.NewAlertContent = value
+    if(boolean){
+      this.$store.state.NewAlertF5Flag = true
+    }else if(!boolean){
+      this.$store.state.NewAlertF5Flag = false
+    }
+  },
+  Show(){
+    const that = this
+    setTimeout(() => {
+      that.$store.state.NewAlertShowFlag = true
+    }, 800);
+  },
+  exit(){
+    this.$store.state.NewAlertShowFlag = false
   }
 },
 components:{
@@ -413,8 +457,7 @@ watch:{
         this.registerCheckWord = this.CheckWordCheck(this.registerCheckWordValue)
       }
     }
-  }
-
+  },
 },
 computed:{
   imgFlag(){

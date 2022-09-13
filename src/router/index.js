@@ -5,6 +5,9 @@ Vue.use(VueRouter)
 import Home from '../pages/Home.vue'
 import News from '../pages/News.vue'
 import TheLogin from '../pages/TheLogin.vue'
+import Person from '../pages/Person.vue'
+import PersonMessage from '../pages/PersonMessage.vue'
+import PersonDynamic from '../pages/PersonDynamic.vue'
 
 export default new VueRouter({
     routes:[
@@ -18,7 +21,21 @@ export default new VueRouter({
         },
         {
             path:'/login',
-            component:TheLogin
+            component: TheLogin
+        },
+        {
+            path:'/person',
+            component: Person,
+            children:[
+                {
+                    path:'message',
+                    component:PersonMessage,
+                },
+                {
+                    path:'dynamic',
+                    component:PersonDynamic,
+                }
+            ]
         },
         {
             path:'/',

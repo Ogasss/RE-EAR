@@ -22,3 +22,11 @@ export const searchTelApi = (id) =>{
         method:'GET',
     })
 }
+
+export const changeUsernameApi = (id,object) =>{
+    return request({
+        url:'/userList/'+id,
+        method:'PUT',
+        data:object
+    })
+}
